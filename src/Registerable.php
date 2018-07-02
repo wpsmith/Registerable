@@ -160,8 +160,6 @@ if ( ! class_exists( 'WPS\Core\Registerable' ) ) {
 		/**
 		 * Set the object properties.
 		 *
-		 * @since 0.2.1
-		 *
 		 * @param string $property Property in object.  Must be set in object.
 		 * @param mixed  $value    Value of property.
 		 *
@@ -180,8 +178,6 @@ if ( ! class_exists( 'WPS\Core\Registerable' ) ) {
 
 		/**
 		 * Magic getter for our object.
-		 *
-		 * @since  0.2.1
 		 *
 		 * @param  string $property Property in object to retrieve.
 		 *
