@@ -49,6 +49,50 @@ if ( ! class_exists( 'WPS\Core\Registerable' ) ) {
 		public $plural = '';
 
 		/**
+		 * Maybe do activate.
+		 *
+		 * @param string $file File path to main plugin file.
+		 */
+		public function register_activation_hook( $file ) {
+			register_activation_hook( $file, array( $this, 'activate' ) );
+			$activation_hook = 'activate_' . plugin_basename( $file );
+			if ( did_action( $activation_hook ) || doing_action( $activation_hook ) ) {
+				$this->activate();
+			}
+		}
+
+		/**
+		 * Maybe do activate.
+		 *
+		 * @param string $file File path to main plugin file.
+		 */
+		public function register_deactivation_hook( $file ) {
+			register_deactivation_hook( $file, array( $this, 'activate' ) );
+			$deactivation_hook = 'deactivate_' . plugin_basename( $file );
+			if ( did_action( $deactivation_hook ) || doing_action( $deactivation_hook ) ) {
+				$this->deactivate();
+			}
+		}
+
+		/**
+		 * Activation method.
+		 *
+		 * Flushes rewrite rules.
+		 */
+		public function activate() {
+			flush_rewrite_rules();
+		}
+
+		/**
+		 * Deactivation method.
+		 *
+		 * Flushes rewrite rules.
+		 */
+		public function deactivate() {
+			flush_rewrite_rules();
+		}
+
+		/**
 		 * A helper function for generating the labels (taxonomy)
 		 *
 		 * @return array Labels array
