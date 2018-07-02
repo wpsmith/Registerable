@@ -1,0 +1,32 @@
+{
+  "name": "wpsmith/registerable",
+  "description": "WordPress Registerable Abstract.",
+  "keywords": [
+    "wordpress",
+    "post type",
+    "post types",
+    "taxonomy"
+  ],
+  "homepage": "https://github.com/wpsmith/Registerable",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "Travis Smith",
+      "email": "t@wpsmith.net",
+      "homepage": "http://wpsmith.net/",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/wpsmith/Registerable/issues"
+  },
+  "require": {
+    "php": ">=5.2.4",
+    "wpsmith/functions": "^0.0.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "WPS\\PostTypes\\": "src/"
+    }
+  }
+}

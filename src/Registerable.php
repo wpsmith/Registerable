@@ -1,0 +1,158 @@
+<?php
+/**
+ * Registerable Abstract Class
+ *
+ * Registerable is shared methods for the Taxonomy and Post Type Classes.
+ *
+ * You may copy, distribute and modify the software as long as you track changes/dates in source files.
+ * Any modifications to or software including (via compiler) GPL-licensed code must also be made
+ * available under the GPL along with build & install instructions.
+ *
+ * @package    WPS\Registerable
+ * @author     Travis Smith <t@wpsmith.net>
+ * @copyright  2015-2018 Travis Smith
+ * @license    http://opensource.org/licenses/gpl-2.0.php GNU Public License v2
+ * @link       https://github.com/wpsmith/WPS
+ * @version    1.0.0
+ * @since      0.1.0
+ */
+
+namespace WPS\Core;
+
+use WPS;
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( ! class_exists( 'WPS\Core\Registerable' ) ) {
+	/**
+	 * Class CampaignActive
+	 *
+	 * @package WPS\Plugins\Fundraising\Taxonomies
+	 */
+	abstract class Registerable {
+
+		/**
+		 * Singular registered name
+		 *
+		 * @var string
+		 */
+		public $singular = '';
+
+		/**
+		 * Plural registered name
+		 *
+		 * @var string
+		 */
+		public $plural = '';
+
+		/**
+		 * A helper function for generating the labels (taxonomy)
+		 *
+		 * @return array Labels array
+		 */
+		abstract public function get_labels();
+
+		/**
+		 * Getter method for retrieving post type registration defaults.
+		 *
+		 * @link http://codex.wordpress.org/Function_Reference/register_taxonomy
+		 */
+		abstract public function get_defaults();
+
+		/**
+		 * Gets the post type as words
+		 *
+		 * @param string $str String to capitalize.
+		 *
+		 * @return string Capitalized string.
+		 */
+		protected function get_word( $str ) {
+			return str_replace( '-', ' ', str_replace( '_', ' ', $str ) );
+		}
+
+		/**
+		 * Bail out if running an autosave, ajax or a cron
+		 *
+		 * @return bool
+		 */
+		protected function should_bail() {
+			return (
+				( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
+				( defined( 'DOING_AJAX' ) && DOING_AJAX ) ||
+				( defined( 'DOING_CRON' ) && DOING_CRON )
+			);
+		}
+
+		/**
+		 * Hooks a function on to a specific action.
+		 *
+		 * Actions are the hooks that the WordPress core launches at specific points
+		 * during execution, or when specific events occur. Plugins can specify that
+		 * one or more of its PHP functions are executed at these points, using the
+		 * Action API.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param string   $tag             The name of the action to which the $function_to_add is hooked.
+		 * @param callable $function_to_add The name of the function you wish to be called.
+		 * @param int      $priority        Optional. Used to specify the order in which the functions
+		 *                                  associated with a particular action are executed. Default 10.
+		 *                                  Lower numbers correspond with earlier execution,
+		 *                                  and functions with the same priority are executed
+		 *                                  in the order in which they were added to the action.
+		 * @param int      $accepted_args   Optional. The number of arguments the function accepts. Default 1.
+		 */
+		public function add_action( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
+			if ( did_action( $tag ) || doing_action( $tag ) ) {
+				call_user_func_array( $function_to_add, array() );
+			} else {
+				add_action( $tag, $function_to_add, $priority, $accepted_args );
+			}
+		}
+
+		/**
+		 * Set the object properties.
+		 *
+		 * @since 0.2.1
+		 *
+		 * @param string $property Property in object.  Must be set in object.
+		 * @param mixed  $value    Value of property.
+		 *
+		 * @return mixed  Returns self object, allows for chaining.
+		 */
+		public function set( $property, $value ) {
+
+			if ( ! property_exists( $this, $property ) ) {
+				return $this;
+			}
+
+			$this->$property = $value;
+
+			return $this;
+		}
+
+		/**
+		 * Magic getter for our object.
+		 *
+		 * @since  0.2.1
+		 *
+		 * @param  string $property Property in object to retrieve.
+		 *
+		 * @throws \Exception Throws an exception if the field is invalid.
+		 *
+		 * @return mixed     Property requested.
+		 */
+		public function __get( $property ) {
+
+			if ( property_exists( $this, $property ) ) {
+				return $this->{$property};
+			}
+
+			throw new \Exception( 'Invalid ' . __CLASS__ . ' property: ' . $property );
+		}
+
+	}
+}
