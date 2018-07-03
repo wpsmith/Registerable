@@ -22,7 +22,7 @@
   },
   "require": {
     "php": ">=5.2.4",
-    "wpsmith/functions": "^0.0.4"
+    "wpsmith/functions": "dev-master"
   },
   "autoload": {
     "psr-4": {
