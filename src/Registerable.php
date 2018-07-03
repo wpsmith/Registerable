@@ -39,14 +39,14 @@ if ( ! class_exists( 'WPS\Core\Registerable' ) ) {
 		 *
 		 * @var string
 		 */
-		public $singular = '';
+		protected $singular = '';
 
 		/**
 		 * Plural registered name
 		 *
 		 * @var string
 		 */
-		public $plural = '';
+		protected $plural = '';
 
 		/**
 		 * Maybe do activate.
