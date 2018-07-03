@@ -49,6 +49,20 @@ if ( ! class_exists( 'WPS\Core\Registerable' ) ) {
 		protected $plural = '';
 
 		/**
+		 * Labels.
+		 *
+		 * @var array
+		 */
+		protected $labels = array();
+
+		/**
+		 * Rewite.
+		 *
+		 * @var array
+		 */
+		protected $rewrite = array();
+
+		/**
 		 * Maybe do activate.
 		 *
 		 * @param string $file File path to main plugin file.
