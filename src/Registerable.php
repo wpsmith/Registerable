@@ -10,14 +10,14 @@
  *
  * @package    WPS\Registerable
  * @author     Travis Smith <t@wpsmith.net>
- * @copyright  2015-2018 Travis Smith
+ * @copyright  2015-2019 Travis Smith
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU Public License v2
  * @link       https://github.com/wpsmith/WPS
  * @version    1.0.0
  * @since      0.1.0
  */
 
-namespace WPS\Core;
+namespace WPS\WP;
 
 use WPS;
 
@@ -26,11 +26,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WPS\Core\Registerable' ) ) {
+if ( ! class_exists( __NAMESPACE__ . '\Registerable' ) ) {
 	/**
-	 * Class CampaignActive
+	 * Class Registerable
 	 *
-	 * @package WPS\Plugins\Fundraising\Taxonomies
+	 * @package WPS\Core\Registerable
 	 */
 	abstract class Registerable {
 
@@ -152,7 +152,26 @@ if ( ! class_exists( 'WPS\Core\Registerable' ) ) {
 		 * one or more of its PHP functions are executed at these points, using the
 		 * Action API.
 		 *
-		 * @since 1.2.0
+		 * @param string $tag The name of the action to which the $function_to_add is hooked.
+		 * @param callable $function_to_add The name of the function you wish to be called.
+		 * @param int $priority Optional. Used to specify the order in which the functions
+		 *                                  associated with a particular action are executed. Default 10.
+		 *                                  Lower numbers correspond with earlier execution,
+		 *                                  and functions with the same priority are executed
+		 *                                  in the order in which they were added to the action.
+		 * @param int $accepted_args Optional. The number of arguments the function accepts. Default 1.
+		 * @param array $args Args to pass to the function.
+		 */
+		public function add_action( $tag, $function_to_add, $priority = 10, $accepted_args = 1, $args = array() ) {
+			if ( did_action( $tag ) || doing_action( $tag ) ) {
+				call_user_func_array( $function_to_add, (array) $args );
+			} else {
+				add_action( $tag, $function_to_add, $priority, $accepted_args );
+			}
+		}
+
+		/**
+		 * Alias for add_action.
 		 *
 		 * @param string   $tag             The name of the action to which the $function_to_add is hooked.
 		 * @param callable $function_to_add The name of the function you wish to be called.
@@ -163,12 +182,72 @@ if ( ! class_exists( 'WPS\Core\Registerable' ) ) {
 		 *                                  in the order in which they were added to the action.
 		 * @param int      $accepted_args   Optional. The number of arguments the function accepts. Default 1.
 		 */
-		public function add_action( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
-			if ( did_action( $tag ) || doing_action( $tag ) ) {
-				call_user_func_array( $function_to_add, array() );
-			} else {
-				add_action( $tag, $function_to_add, $priority, $accepted_args );
+		public function add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 1, $args = array() ) {
+			$this->add_action( $tag, $function_to_add, $priority, $accepted_args, $args );
+		}
+
+		/**
+		 * Hooks a function on to a specific action.
+		 *
+		 * Actions are the hooks that the WordPress core launches at specific points
+		 * during execution, or when specific events occur. Plugins can specify that
+		 * one or more of its PHP functions are executed at these points, using the
+		 * Action API.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param string   $tag             The name of the action to which the $function_to_add is hooked.
+		 * @param callable $function_to_add The name of the function you wish to be called.
+		 * @param int      $priority        Optional. Used to specify the order in which the functions
+		 *                                  associated with a particular action are executed. Default 10.
+		 *                                  Lower numbers correspond with earlier execution,
+		 *                                  and functions with the same priority are executed
+		 *                                  in the order in which they were added to the action.
+		 * @param int      $accepted_args   Optional. The number of arguments the function accepts. Default 1.
+		 *
+		 * @return bool Whether it added the function.
+		 */
+		public function add_action_once( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
+
+			if ( has_action( $tag, $function_to_add ) ) {
+				return false;
 			}
+
+			$this->add_action( $tag, $function_to_add, $priority, $accepted_args );
+
+			return true;
+		}
+
+		/**
+		 * Hooks a function on to a specific action.
+		 *
+		 * Actions are the hooks that the WordPress core launches at specific points
+		 * during execution, or when specific events occur. Plugins can specify that
+		 * one or more of its PHP functions are executed at these points, using the
+		 * Action API.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param string   $tag             The name of the action to which the $function_to_add is hooked.
+		 * @param callable $function_to_add The name of the function you wish to be called.
+		 * @param int      $priority        Optional. Used to specify the order in which the functions
+		 *                                  associated with a particular action are executed. Default 10.
+		 *                                  Lower numbers correspond with earlier execution,
+		 *                                  and functions with the same priority are executed
+		 *                                  in the order in which they were added to the action.
+		 * @param int      $accepted_args   Optional. The number of arguments the function accepts. Default 1.
+		 *
+		 * @return bool Whether it added the function.
+		 */
+		public function add_filter_once( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
+
+			if ( has_filter( $tag, $function_to_add ) ) {
+				return false;
+			}
+
+			$this->add_filter( $tag, $function_to_add, $priority, $accepted_args );
+
+			return true;
 		}
 
 		/**

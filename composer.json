@@ -13,7 +13,7 @@
     {
       "name": "Travis Smith",
       "email": "t@wpsmith.net",
-      "homepage": "http://wpsmith.net/",
+      "homepage": "https://wpsmith.net/",
       "role": "Developer"
     }
   ],
@@ -21,12 +21,12 @@
     "issues": "https://github.com/wpsmith/Registerable/issues"
   },
   "require": {
-    "php": ">=5.2.4",
+    "php": ">=5.6.0",
     "wpsmith/functions": "dev-master"
   },
   "autoload": {
     "psr-4": {
-      "WPS\\Core\\": "src/"
+      "WPS\\WP\\": "src/"
     }
   }
 }
